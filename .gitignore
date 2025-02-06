@@ -1,0 +1,3 @@
+.venv/
+App_data/Airflow/logs/*
+App_data/meltano-projects/meltano_env/

@@ -12,3 +12,11 @@ services:
       - ./data/northwind.sql:/docker-entrypoint-initdb.d/northwind.sql
     ports:
       - 5432:5432
+
+  meltano:
+    image: meltano/meltano
+    environment:
+      MELTANO_DATABASE_URL: postgres://northwind_user:thewindisblowing@db:5432/northwind
+    volumes:
+      - ./meltano-projects:/meltano-projects
+      - ./meltano-env:/meltano-env
