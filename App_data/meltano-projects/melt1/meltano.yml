@@ -1,0 +1,55 @@
+version: 1
+default_environment: dev
+project_id: cc26a1d3-c11a-4d63-8a65-e5581e7b3f75
+environments:
+- name: dev
+- name: staging
+- name: prod
+plugins:
+  extractors:
+  - name: tap-github
+    variant: meltanolabs
+    pip_url: meltanolabs-tap-github
+    config:
+      start_date: 2020, 1, 1
+      repositories:
+      - meltano/meltano
+    select:
+    - commits.url
+    - commits.sha
+    - commits.commit_timestamp
+    - commits.*
+  - name: tap-csv
+    variant: meltanolabs
+    pip_url: git+https://github.com/MeltanoLabs/tap-csv.git
+    config:
+      files:
+      - entity: order_details
+        path: /mnt/c/Users/Defensoria/Documents/Processos Seletivos/Indicium - Lighthouse/Engenheiro
+          de Dados/Projeto App_dados/Desafios-Indicium-code-challenge/data/order_details.csv
+        keys: [order_id, product_id, unit_price, quantity, discount]
+  - name: tap-postgres
+    variant: meltanolabs
+    pip_url: git+https://github.com/MeltanoLabs/tap-postgres.git
+  loaders:
+  - name: target-jsonl
+    variant: andyh1203
+    pip_url: target-jsonl
+  - name: target-postgres
+    variant: meltanolabs
+    pip_url: meltanolabs-target-postgres
+    config:
+      user: meltano
+      database: postgres
+      add_record_metadata: true
+      host: localhost
+  utilities:
+  - name: dbt-postgres
+    variant: dbt-labs
+    pip_url: dbt-core dbt-postgres meltano-dbt-ext~=0.3.0
+    config:
+      host: localhost
+      port: 5432
+      user: meltano
+      dbname: postgres
+      schema: analytics
